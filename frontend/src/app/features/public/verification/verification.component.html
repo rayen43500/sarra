@@ -1,0 +1,43 @@
+<section class="verify-page">
+  <article class="card verify-card">
+    <div class="heading-row">
+      <span class="icon-chip">QR</span>
+      <div>
+        <h2>Verification publique de certificat</h2>
+        <p class="muted">Entrez un code, scannez via camera, ou importez une image QR.</p>
+      </div>
+    </div>
+
+    <form class="verify-form" [formGroup]="form" (ngSubmit)="verify()">
+      <input class="input" formControlName="code" placeholder="Ex: CERT-2026-1001" />
+      <button class="btn btn-primary" type="submit">Verifier</button>
+    </form>
+
+    <div class="scan-actions">
+      <button class="btn btn-secondary" type="button" (click)="startScanner()" [disabled]="isScanning">Demarrer scan camera</button>
+      <button class="btn btn-secondary" type="button" (click)="stopScanner()" [disabled]="!isScanning">Arreter scan</button>
+      <label class="btn btn-secondary file-btn" for="qrFile">Importer image QR</label>
+      <input id="qrFile" type="file" accept="image/*" (change)="onFileUpload($event)" />
+    </div>
+
+    <div id="qr-reader" class="qr-reader" [class.active]="isScanning"></div>
+    <div id="qr-file-reader" class="qr-file-reader"></div>
+
+    @if (scannerMessage) {
+      <p class="scanner-message">{{ scannerMessage }}</p>
+    }
+
+    @if (checked && !result) {
+      <p class="error-text">Code invalide. Merci de verifier.</p>
+    }
+
+    @if (result) {
+      <div class="result" [class.valid]="result.valid" [class.invalid]="!result.valid">
+        <h3>{{ result.valid ? 'Certificat valide' : 'Certificat non valide' }}</h3>
+        <p>Titulaire : {{ result.holder }}</p>
+        <p>Date : {{ result.date }}</p>
+        <p>Statut : {{ result.status }}</p>
+      </div>
+    }
+  </article>
+</section>

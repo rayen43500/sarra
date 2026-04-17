@@ -1,0 +1,45 @@
+.users-page {
+  display: grid;
+  gap: 16px;
+}
+
+.user-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.message {
+  margin-top: 12px;
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+  padding: 10px 8px;
+}
+
+td:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+@media (max-width: 960px) {
+  .user-form {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,88 @@
+<section class="home-wrap">
+  <header class="hero">
+    <nav class="hero-nav">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        <strong>CertifyHub</strong>
+      </div>
+      <div class="hero-actions">
+        <a routerLink="/verify" class="btn btn-secondary">Verifier un certificat</a>
+        <a routerLink="/login" class="btn btn-primary">Connexion</a>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <div>
+        <span class="badge info">Plateforme securisee JWT + RBAC</span>
+        <h1>
+          La plateforme certif-tech pour delivrer,
+          signer et verifier les certificats numeriques.
+        </h1>
+        <p>
+          Une experience unifiee pour administrateurs, clients et visiteurs:
+          generation PDF reelle, signature numerique, verification QR et examens QCM integres.
+        </p>
+        <div class="cta-row">
+          <a routerLink="/login" class="btn btn-primary">Lancer la plateforme</a>
+          <a routerLink="/verify" class="btn btn-secondary">Verifier un certificat</a>
+        </div>
+
+        <div class="stack-row">
+          @for (tech of stack; track tech) {
+            <span class="stack-chip">{{ tech }}</span>
+          }
+        </div>
+      </div>
+
+      <article class="hero-card card">
+        <h3>Centre de confiance</h3>
+        <div class="hero-stats">
+          <div>
+            <p class="muted">Certificats emis</p>
+            <h4>12,840</h4>
+          </div>
+          <div>
+            <p class="muted">Verifications/jour</p>
+            <h4>1,526</h4>
+          </div>
+          <div>
+            <p class="muted">Validite certifiee</p>
+            <h4>98.4%</h4>
+          </div>
+        </div>
+
+        <div class="shield">
+          <div class="shield-icon">SEC</div>
+          <div>
+            <strong>Controle d integrite actif</strong>
+            <p class="muted">Hash et signature verifies cote backend sur chaque verification publique.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </header>
+
+  <section class="features">
+    @for (item of features; track item.title) {
+      <article class="card feature-item">
+        <span class="feature-icon" aria-hidden="true">▣</span>
+        <h3>{{ item.title }}</h3>
+        <p class="muted">{{ item.text }}</p>
+      </article>
+    }
+  </section>
+
+  <section class="workflow card">
+    <h3>Cycle de certification</h3>
+    <p class="muted">Processus complet de la creation a la verification publique.</p>
+    <div class="workflow-grid">
+      @for (item of workflow; track item.step) {
+        <article class="workflow-item">
+          <span class="step">{{ item.step }}</span>
+          <h4>{{ item.title }}</h4>
+          <p>{{ item.text }}</p>
+        </article>
+      }
+    </div>
+  </section>
+</section>

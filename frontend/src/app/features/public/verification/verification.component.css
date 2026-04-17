@@ -1,0 +1,106 @@
+.verify-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(37, 99, 235, 0.2), transparent 32%),
+    linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.8)),
+    var(--color-bg);
+}
+
+.verify-card {
+  width: min(100%, 760px);
+}
+
+.heading-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.icon-chip {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+}
+
+.verify-form {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
+.scan-actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+#qrFile {
+  display: none;
+}
+
+.file-btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+.qr-reader {
+  margin-top: 14px;
+  min-height: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px dashed var(--color-border);
+}
+
+.qr-reader.active {
+  min-height: 280px;
+}
+
+.qr-file-reader {
+  display: none;
+}
+
+.scanner-message {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+.result {
+  margin-top: 14px;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.result.valid {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.result.invalid {
+  border-color: rgba(220, 38, 38, 0.35);
+  background: rgba(220, 38, 38, 0.08);
+}
+
+.error-text {
+  color: var(--color-danger);
+}
+
+@media (max-width: 700px) {
+  .verify-form {
+    grid-template-columns: 1fr;
+  }
+
+  .scan-actions {
+    flex-direction: column;
+  }
+}

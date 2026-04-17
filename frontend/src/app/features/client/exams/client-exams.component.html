@@ -1,0 +1,58 @@
+<section class="exam-page card">
+  <header class="exam-header">
+    <div>
+      <h3>Examen QCM dynamique</h3>
+      <p class="muted">Questions chargees depuis le backend, correction automatique, certificat genere en cas de reussite.</p>
+    </div>
+    <div class="timer" [class.warning]="remainingSeconds <= 20">{{ formatTime(remainingSeconds) }}</div>
+  </header>
+
+  <div class="exam-select-row">
+    <select class="input" [(ngModel)]="selectedExamId" [disabled]="started || loadingExamData" (change)="loadExamQuestions()">
+      @for (exam of exams; track exam.id) {
+        <option [ngValue]="exam.id">{{ exam.title }} (seuil {{ exam.passScore }}%)</option>
+      }
+    </select>
+    <button class="btn btn-secondary" (click)="loadExamQuestions()" [disabled]="started || loadingExamData">Charger questions</button>
+  </div>
+
+  <div class="exam-actions">
+    <button class="btn btn-primary" (click)="startExam()" [disabled]="started || loadingExamData || questions.length === 0">Demarrer</button>
+    <button class="btn btn-secondary" (click)="submitExam()" [disabled]="!started || loading">Soumettre</button>
+  </div>
+
+  @if (loadingExamData) {
+    <p class="muted">Chargement des donnees examen...</p>
+  }
+
+  @for (q of questions; track q.id) {
+    <article class="question card">
+      <h4>{{ q.id }}. {{ q.text }}</h4>
+      <div class="options">
+        @for (option of q.options; track option.id) {
+          <button
+            class="btn btn-secondary"
+            [class.selected]="answers[q.id] === option.id"
+            [disabled]="!started"
+            (click)="selectAnswer(q.id, option.id)">
+            {{ option.text }}
+          </button>
+        }
+      </div>
+    </article>
+  }
+
+  @if (submitted) {
+    <div class="result-block">
+      <h4>Score: {{ score | number: '1.0-2' }} / {{ maxScore | number: '1.0-2' }}</h4>
+      @if (currentResult) {
+        <p>Pourcentage: {{ currentResult.percentage | number: '1.0-2' }}%</p>
+      }
+      <p>{{ message }}</p>
+    </div>
+  }
+
+  @if (!submitted && message) {
+    <p class="message">{{ message }}</p>
+  }
+</section>

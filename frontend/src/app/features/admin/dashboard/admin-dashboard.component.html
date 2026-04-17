@@ -1,0 +1,111 @@
+<section class="page-stack">
+  <div class="grid-stats">
+    @for (stat of stats; track stat.label) {
+      <article class="card stat-card">
+        <p class="muted">{{ stat.label }}</p>
+        <h3>{{ stat.value }}</h3>
+        <span class="badge success">{{ stat.trend }}</span>
+      </article>
+    }
+  </div>
+
+  <div class="grid-two">
+    <article class="card">
+      <h3>Actions administrateur</h3>
+      <p class="muted">Gestion centralisee des operations critiques.</p>
+      <div class="actions">
+        <button class="btn btn-primary" (click)="createUser()">Ajouter un utilisateur</button>
+        <button class="btn btn-secondary" (click)="createCertificate()">Creer un certificat</button>
+        <button class="btn btn-secondary" (click)="createExam()">Creer un examen</button>
+      </div>
+      @if (actionMessage) {
+        <p class="action-message">{{ actionMessage }}</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Activite recente</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Acteur</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (log of logs; track log.date) {
+              <tr>
+                <td>{{ log.action }}</td>
+                <td>{{ log.actor }}</td>
+                <td>{{ log.date }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+
+  <div class="grid-two">
+    <article class="card">
+      <h3>Batch Newsletter</h3>
+      <p class="muted">Execution manuelle du job Spring Batch newsletterDigestJob.</p>
+      <button class="btn btn-primary" (click)="runBatch()">Lancer batch</button>
+      @if (batchMessage) {
+        <p class="action-message">{{ batchMessage }}</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Communication (Email / SMS)</h3>
+      <div class="forms-grid">
+        <input class="input" type="email" [(ngModel)]="emailTo" placeholder="Destinataire email" />
+        <input class="input" type="text" [(ngModel)]="emailSubject" placeholder="Sujet" />
+        <textarea class="input" rows="3" [(ngModel)]="emailBody" placeholder="Message email"></textarea>
+        <button class="btn btn-secondary" (click)="sendEmail()">Envoyer email</button>
+
+        <input class="input" type="text" [(ngModel)]="smsTo" placeholder="Numero" />
+        <textarea class="input" rows="2" [(ngModel)]="smsMessage" placeholder="Message SMS"></textarea>
+        <button class="btn btn-secondary" (click)="sendSms()">Envoyer SMS</button>
+      </div>
+      @if (commsMessage) {
+        <p class="action-message">{{ commsMessage }}</p>
+      }
+    </article>
+  </div>
+
+  <article class="card">
+    <h3>Gestion RDV Clients</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Date</th>
+            <th>Statut</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (appointment of appointments; track appointment.id) {
+            <tr>
+              <td>{{ appointment.id }}</td>
+              <td>{{ appointment.userId }}</td>
+              <td>{{ appointment.scheduledAt | date: 'short' }}</td>
+              <td>{{ appointment.status }}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="btn btn-secondary" (click)="updateAppointmentStatus(appointment.id, 'CONFIRMED')">Confirmer</button>
+                  <button class="btn btn-secondary" (click)="updateAppointmentStatus(appointment.id, 'CANCELLED')">Annuler</button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>

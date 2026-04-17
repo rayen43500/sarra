@@ -1,0 +1,59 @@
+<button class="chatbot-fab" type="button" (click)="toggleChat()" aria-label="Assistant choix certificat">
+  Chat
+</button>
+
+@if (chatOpen) {
+  <section class="chatbot-panel card">
+    <div class="chatbot-head">
+      <h3>Assistant CertifyHub</h3>
+      <button class="btn btn-secondary" type="button" (click)="toggleChat()">Fermer</button>
+    </div>
+    <p class="muted">Choisissez votre objectif et obtenez une recommandation immediate.</p>
+    <div class="chatbot-options">
+      <button class="btn btn-secondary" type="button" (click)="chooseCertificate('security')">Securite</button>
+      <button class="btn btn-secondary" type="button" (click)="chooseCertificate('frontend')">Frontend</button>
+      <button class="btn btn-secondary" type="button" (click)="chooseCertificate('backend')">Backend</button>
+      <button class="btn btn-secondary" type="button" (click)="chooseCertificate('database')">Base de donnees</button>
+    </div>
+
+    <div class="chat-history">
+      @for (msg of messages; track $index) {
+        <p class="chat-bubble" [class.user]="msg.sender === 'user'" [class.bot]="msg.sender === 'bot'">
+          {{ msg.text }}
+        </p>
+      }
+    </div>
+
+    <div class="chat-input-row">
+      <input
+        class="input"
+        type="text"
+        [(ngModel)]="chatInput"
+        (keydown.enter)="sendMessage()"
+        placeholder="Ecris ton message..."
+      />
+      <button class="btn btn-primary" type="button" (click)="sendMessage()">Envoyer</button>
+    </div>
+
+    <div class="chat-extra">
+      <input
+        class="input"
+        type="email"
+        [(ngModel)]="newsletterEmail"
+        placeholder="Email pour newsletter"
+      />
+      <button class="btn btn-secondary" type="button" (click)="subscribeNewsletter()">S'abonner Newsletter</button>
+
+      @if (socialProviders) {
+        <div class="social-links">
+          <a class="btn btn-secondary" [href]="socialAuthUrl(socialProviders.facebookAuthUrl)" target="_blank" rel="noreferrer">Facebook Auth</a>
+          <a class="btn btn-secondary" [href]="socialAuthUrl(socialProviders.linkedInAuthUrl)" target="_blank" rel="noreferrer">LinkedIn Auth</a>
+        </div>
+      }
+
+      @if (helperMessage) {
+        <p class="muted helper">{{ helperMessage }}</p>
+      }
+    </div>
+  </section>
+}

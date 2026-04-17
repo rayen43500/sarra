@@ -1,0 +1,41 @@
+<section class="login-page">
+  <div class="login-left">
+    <h1>Plateforme de certificats numeriques</h1>
+    <p>
+      Gestion securisee, attribution, verification publique par QR Code et suivi des examens dans une interface moderne.
+    </p>
+    <div class="highlight card">
+      <h3>Acces rapide demo</h3>
+      <p>admin&#64;cert.local / Admin&#64;123 -> vue administrateur</p>
+      <p>client&#64;cert.local / Client&#64;123 -> vue client</p>
+      <p>blocked&#64;cert.local / Blocked&#64;123 -> compte desactive (test)</p>
+    </div>
+  </div>
+
+  <div class="login-card card">
+    <h2>Connexion</h2>
+    <p class="muted">Bienvenue. Connecte-toi pour continuer.</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <label>
+        Email
+        <input class="input" type="email" formControlName="email" placeholder="email@exemple.com" />
+      </label>
+
+      <label>
+        Mot de passe
+        <input class="input" type="password" formControlName="password" placeholder="******" />
+      </label>
+
+      @if (error) {
+        <p class="error-text">{{ error }}</p>
+      }
+
+      <button class="btn btn-primary" [disabled]="loading" type="submit">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <a routerLink="/verify" class="link-muted">Verification publique d'un certificat</a>
+  </div>
+</section>

@@ -1,0 +1,123 @@
+<section class="client-grid">
+  <article class="card scenario-banner">
+    <h3>Scenario Client</h3>
+    <p class="muted">Parcours recommande: passer un examen, recevoir un certificat, verifier le statut, puis utiliser les services annexes (RDV, newsletter, paiement simule).</p>
+  </article>
+
+  <article class="card hero">
+    <h3>Bienvenue dans votre espace client</h3>
+    <p class="muted">
+      Consultez vos certificats, telechargez vos PDFs signes numeriquement et suivez vos performances aux examens.
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" (click)="goToCertificates()">Mes certificats</button>
+      <button class="btn btn-secondary" (click)="startExam()">Passer un examen</button>
+    </div>
+    @if (actionMessage) {
+      <p class="hero-note">{{ actionMessage }}</p>
+    }
+  </article>
+
+  <div class="summary-grid">
+    @for (item of summary; track item.label) {
+      <article class="card summary-card">
+        <p class="muted">{{ item.label }}</p>
+        <h3>{{ item.value }}</h3>
+        <span class="badge info">{{ item.badge }}</span>
+      </article>
+    }
+  </div>
+
+  <article class="card">
+    <h3>Actions recommandees</h3>
+    <ul>
+      @for (action of nextActions; track action) {
+        <li>{{ action }}</li>
+      }
+    </ul>
+  </article>
+
+  <div class="feature-grid">
+    <article class="card">
+      <h3>Avis communautaire</h3>
+      <p class="muted">Reaction et notation sur le certificat ID {{ targetId }}.</p>
+      <div class="inline-actions">
+        <button class="btn btn-secondary" (click)="setLike(true)">Like</button>
+        <button class="btn btn-secondary" (click)="setLike(false)">Dislike</button>
+      </div>
+      @if (reactionSummary) {
+        <p class="mini-line">Likes: {{ reactionSummary.likes }} | Dislikes: {{ reactionSummary.dislikes }} | Mon choix: {{ reactionLabel(reactionSummary.myReaction) }}</p>
+      }
+
+      <div class="rating-box">
+        <label class="muted" for="score">Score (1 a 5)</label>
+        <input id="score" class="input" type="number" min="1" max="5" [(ngModel)]="ratingScore" />
+        <textarea class="input" rows="3" [(ngModel)]="ratingComment" placeholder="Commentaire optionnel"></textarea>
+        <button class="btn btn-primary" (click)="submitRating()">Envoyer votre note</button>
+      </div>
+
+      @if (ratingSummary) {
+        <p class="mini-line">Moyenne: {{ ratingSummary.average | number: '1.1-2' }} / 5 ({{ ratingSummary.total }} avis)</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Paiement simule</h3>
+      <p class="muted">Mode demonstration pour valider le parcours de paiement.</p>
+      <div class="stack">
+        <input class="input" type="number" min="1" [(ngModel)]="paymentAmount" placeholder="Montant" />
+        <input class="input" type="text" [(ngModel)]="paymentDescription" placeholder="Description" />
+        <button class="btn btn-primary" (click)="simulatePayment()">Payer (simulation)</button>
+      </div>
+      @if (paymentMessage) {
+        <p class="mini-line">{{ paymentMessage }}</p>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Prise de RDV</h3>
+      <p class="muted">Planifiez un rendez-vous de suivi avec l equipe support.</p>
+      <div class="stack">
+        <input class="input" type="datetime-local" [(ngModel)]="appointmentDateTime" />
+        <textarea class="input" rows="2" [(ngModel)]="appointmentNote" placeholder="Objet du rendez-vous"></textarea>
+        <button class="btn btn-primary" (click)="createAppointment()">Demander RDV</button>
+      </div>
+      @if (appointmentMessage) {
+        <p class="mini-line">{{ appointmentMessage }}</p>
+      }
+      @if (appointments.length > 0) {
+        <ul class="appointment-list">
+          @for (item of appointments; track item.id) {
+            <li>
+              <span>{{ item.scheduledAt | date: 'short' }}</span>
+              <span class="badge" [class]="'badge ' + appointmentBadgeClass(item.status)">{{ item.status }}</span>
+            </li>
+          }
+        </ul>
+      }
+    </article>
+
+    <article class="card">
+      <h3>Newsletter, RSS et social login</h3>
+      <p class="muted">Restez informe et connectez-vous via vos fournisseurs externes.</p>
+      <div class="stack">
+        <input class="input" type="email" [(ngModel)]="newsletterEmail" placeholder="Email newsletter" />
+        <button class="btn btn-secondary" (click)="subscribeNewsletter()">S'abonner</button>
+        <a class="btn btn-secondary link-btn" [href]="rssUrl" target="_blank" rel="noreferrer">Ouvrir flux RSS certificats</a>
+      </div>
+
+      @if (socialProviders) {
+        <div class="inline-actions">
+          <a class="btn btn-secondary link-btn" [href]="'http://localhost:8080' + socialProviders.facebookAuthUrl" target="_blank" rel="noreferrer">Facebook Login</a>
+          <a class="btn btn-secondary link-btn" [href]="'http://localhost:8080' + socialProviders.linkedInAuthUrl" target="_blank" rel="noreferrer">LinkedIn Login</a>
+        </div>
+      }
+    </article>
+  </div>
+
+  @if (feedbackMessage) {
+    <article class="card">
+      <p class="mini-line strong">{{ feedbackMessage }}</p>
+    </article>
+  }
+</section>

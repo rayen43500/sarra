@@ -1,0 +1,43 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-badge">CH</div>
+      <div>
+        <h1>CertifyHub</h1>
+        <p>{{ spaceTitle }} - Digital Certificates</p>
+      </div>
+    </div>
+
+    <nav class="nav-list">
+      @for (item of navItems; track item.route) {
+        <a class="nav-link" [routerLink]="item.route" routerLinkActive="active">
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer card">
+      <p class="muted">Session active</p>
+      <h4>{{ authService.getEmail() || 'demo@cert.local' }}</h4>
+      <span class="badge info">{{ authService.getRole() || 'ROLE_CLIENT' }}</span>
+      <button class="btn btn-secondary" (click)="logout()">Se deconnecter</button>
+    </div>
+  </aside>
+
+  <section class="main-zone">
+    <header class="topbar">
+      <div class="topbar-headline">
+        <span class="topbar-kicker">{{ portalTitle }}</span>
+        <h2>Plateforme de certificats numeriques</h2>
+        <p>{{ portalSubtitle }}</p>
+      </div>
+      <div class="topbar-actions">
+        <input type="text" class="input" placeholder="Recherche rapide: certificat, examen, utilisateur..." />
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>

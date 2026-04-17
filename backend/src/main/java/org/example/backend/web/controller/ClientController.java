@@ -9,8 +9,10 @@ import org.example.backend.service.ResultService;
 import org.example.backend.service.UserService;
 import org.example.backend.web.dto.certificate.CertificateDto;
 import org.example.backend.web.dto.exam.ExamDto;
+import org.example.backend.web.dto.exam.ExamQuestionDto;
 import org.example.backend.web.dto.notification.NotificationDto;
 import org.example.backend.web.dto.result.ResultDto;
+import org.example.backend.web.dto.result.SubmitExamAnswersRequest;
 import org.example.backend.web.dto.result.SubmitResultRequest;
 import org.example.backend.web.dto.user.UpdateProfileRequest;
 import org.example.backend.web.dto.user.UserDto;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/client")
@@ -81,9 +84,19 @@ public class ClientController {
         return ResponseEntity.ok(examService.listActive());
     }
 
+    @GetMapping("/exams/{examId}/questions")
+    public ResponseEntity<List<ExamQuestionDto>> examQuestions(@PathVariable Long examId) {
+        return ResponseEntity.ok(examService.listQuestionsForExam(examId));
+    }
+
     @PostMapping("/results")
     public ResponseEntity<ResultDto> submitResult(@RequestBody SubmitResultRequest request, Principal principal) {
         return ResponseEntity.ok(resultService.submit(request, principal.getName()));
+    }
+
+    @PostMapping("/results/answers")
+    public ResponseEntity<ResultDto> submitAnswers(@Valid @RequestBody SubmitExamAnswersRequest request, Principal principal) {
+        return ResponseEntity.ok(resultService.submitAnswers(request, principal.getName()));
     }
 
     @GetMapping("/results")

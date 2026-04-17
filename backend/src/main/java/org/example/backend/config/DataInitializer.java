@@ -2,6 +2,8 @@ package org.example.backend.config;
 
 import org.example.backend.domain.entity.Certificate;
 import org.example.backend.domain.entity.Exam;
+import org.example.backend.domain.entity.Question;
+import org.example.backend.domain.entity.QuestionOption;
 import org.example.backend.domain.entity.Role;
 import org.example.backend.domain.entity.User;
 import org.example.backend.domain.enums.CertificateStatus;
@@ -9,6 +11,8 @@ import org.example.backend.domain.enums.RoleName;
 import org.example.backend.domain.enums.UserStatus;
 import org.example.backend.repository.CertificateRepository;
 import org.example.backend.repository.ExamRepository;
+import org.example.backend.repository.QuestionOptionRepository;
+import org.example.backend.repository.QuestionRepository;
 import org.example.backend.repository.RoleRepository;
 import org.example.backend.repository.UserRepository;
 import java.time.Instant;
@@ -24,6 +28,8 @@ public class DataInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final ExamRepository examRepository;
+    private final QuestionRepository questionRepository;
+    private final QuestionOptionRepository questionOptionRepository;
     private final CertificateRepository certificateRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -31,12 +37,16 @@ public class DataInitializer implements CommandLineRunner {
             RoleRepository roleRepository,
             UserRepository userRepository,
             ExamRepository examRepository,
+            QuestionRepository questionRepository,
+            QuestionOptionRepository questionOptionRepository,
             CertificateRepository certificateRepository,
             PasswordEncoder passwordEncoder
     ) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.examRepository = examRepository;
+        this.questionRepository = questionRepository;
+        this.questionOptionRepository = questionOptionRepository;
         this.certificateRepository = certificateRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -109,6 +119,10 @@ public class DataInitializer implements CommandLineRunner {
             examRepository.save(exam2);
         }
 
+        if (questionRepository.count() == 0) {
+            examRepository.findAll().forEach(exam -> seedQuestionsForExam(exam));
+        }
+
         seedCertificate(
                 "CERT-DEMO-ACTIVE",
                 "Certification Platform Security",
@@ -147,6 +161,55 @@ public class DataInitializer implements CommandLineRunner {
                 Instant.now().minusSeconds(3L * 24 * 60 * 60),
                 "Policy violation"
         );
+    }
+
+    private void seedQuestionsForExam(Exam exam) {
+        if (questionRepository.findByExamIdOrderByOrderIndexAsc(exam.getId()).size() > 0) {
+            return;
+        }
+
+        Question q1 = new Question();
+        q1.setExam(exam);
+        q1.setQuestionText("Quel composant protege les routes Angular ?");
+        q1.setPoints(1.0);
+        q1.setOrderIndex(1);
+        q1 = questionRepository.save(q1);
+        seedOptions(q1,
+                new String[]{"Interceptor", "Guard", "Pipe", "Resolver"},
+                1
+        );
+
+        Question q2 = new Question();
+        q2.setExam(exam);
+        q2.setQuestionText("Quelle route publique permet la verification de certificat ?");
+        q2.setPoints(1.0);
+        q2.setOrderIndex(2);
+        q2 = questionRepository.save(q2);
+        seedOptions(q2,
+                new String[]{"/api/auth/verify", "/api/public/verify/{code}", "/api/client/verify", "/verify/api"},
+                1
+        );
+
+        Question q3 = new Question();
+        q3.setExam(exam);
+        q3.setQuestionText("Quel statut est attribue a un certificat annule ?");
+        q3.setPoints(1.0);
+        q3.setOrderIndex(3);
+        q3 = questionRepository.save(q3);
+        seedOptions(q3,
+                new String[]{"ACTIVE", "EXPIRED", "REVOKED", "TAMPERED"},
+                2
+        );
+    }
+
+    private void seedOptions(Question question, String[] options, int correctIndex) {
+        for (int i = 0; i < options.length; i++) {
+            QuestionOption option = new QuestionOption();
+            option.setQuestion(question);
+            option.setOptionText(options[i]);
+            option.setIsCorrect(i == correctIndex);
+            questionOptionRepository.save(option);
+        }
     }
 
     private void seedCertificate(

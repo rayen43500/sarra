@@ -12,7 +12,9 @@ import org.example.backend.web.dto.certificate.CertificateDto;
 import org.example.backend.web.dto.certificate.CreateCertificateRequest;
 import org.example.backend.web.dto.dashboard.DashboardStatsDto;
 import org.example.backend.web.dto.exam.CreateExamRequest;
+import org.example.backend.web.dto.exam.CreateExamQuestionRequest;
 import org.example.backend.web.dto.exam.ExamDto;
+import org.example.backend.web.dto.exam.ExamQuestionDto;
 import org.example.backend.web.dto.log.AuditLogDto;
 import org.example.backend.web.dto.result.ResultDto;
 import org.example.backend.web.dto.user.AdminUpdateUserRequest;
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -123,6 +126,15 @@ public class AdminController {
     @PostMapping("/exams")
     public ResponseEntity<ExamDto> createExam(@RequestBody CreateExamRequest request, Principal principal) {
         return ResponseEntity.ok(examService.createExam(request, principal.getName()));
+    }
+
+    @PostMapping("/exams/{examId}/questions")
+    public ResponseEntity<ExamQuestionDto> addExamQuestion(
+            @PathVariable Long examId,
+            @Valid @RequestBody CreateExamQuestionRequest request,
+            Principal principal
+    ) {
+        return ResponseEntity.ok(examService.addQuestion(examId, request, principal.getName()));
     }
 
     @GetMapping("/exams")

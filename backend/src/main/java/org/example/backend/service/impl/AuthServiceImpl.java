@@ -52,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         User user = userRepository.findByEmail(request.email()).orElseThrow();
-        String role = user.getRoles().stream().findFirst().map(r -> r.getName().name()).orElse(RoleName.ROLE_CLIENT.name());
+        String role = resolvePrimaryRole(user);
         String token = jwtService.generateToken(
                 customUserDetailsService.loadUserByUsername(request.email()),
                 Map.of("role", role)
@@ -81,5 +81,13 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtService.generateToken(customUserDetailsService.loadUserByUsername(user.getEmail()));
         return new AuthResponse(token, user.getEmail(), RoleName.ROLE_CLIENT.name());
+    }
+
+    private String resolvePrimaryRole(User user) {
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName() == RoleName.ROLE_ADMIN);
+        if (isAdmin) {
+            return RoleName.ROLE_ADMIN.name();
+        }
+        return RoleName.ROLE_CLIENT.name();
     }
 }

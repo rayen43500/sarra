@@ -25,8 +25,10 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateRepository certificateRepository;
@@ -99,11 +101,13 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CertificateDto> listAdminCertificates() {
         return certificateRepository.findAll().stream().map(this::toDtoWithDynamicStatus).toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CertificateDto> listClientCertificates(String clientEmail) {
         User client = userRepository.findByEmail(clientEmail).orElseThrow();
         return certificateRepository.findByIssuedTo(client).stream().map(this::toDtoWithDynamicStatus).toList();
@@ -201,12 +205,14 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Path getPdfPathForAdmin(Long certificateId) {
         Certificate certificate = certificateRepository.findById(certificateId).orElseThrow();
         return Path.of(certificate.getPdfPath());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Path getPdfPathForClient(Long certificateId, String clientEmail) {
         User client = userRepository.findByEmail(clientEmail).orElseThrow();
         Certificate certificate = certificateRepository.findById(certificateId).orElseThrow();

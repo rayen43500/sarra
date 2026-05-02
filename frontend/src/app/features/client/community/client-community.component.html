@@ -1,0 +1,27 @@
+<section class="page-stack">
+  <article class="card">
+    <h3>Avis communautaire</h3>
+    <p class="muted">Reaction et notation sur le certificat ID {{ targetId }}.</p>
+    <div class="inline-actions">
+      <button class="btn btn-secondary" (click)="setLike(true)">Like</button>
+      <button class="btn btn-secondary" (click)="setLike(false)">Dislike</button>
+    </div>
+    @if (reactionSummary) {
+      <p class="mini-line">Likes: {{ reactionSummary.likes }} | Dislikes: {{ reactionSummary.dislikes }} | Mon choix: {{ reactionLabel(reactionSummary.myReaction) }}</p>
+    }
+
+    <div class="rating-box">
+      <label class="muted" for="score">Score (1 a 5)</label>
+      <input id="score" class="input" type="number" min="1" max="5" [(ngModel)]="ratingScore" />
+      <textarea class="input" rows="3" [(ngModel)]="ratingComment" placeholder="Commentaire optionnel"></textarea>
+      <button class="btn btn-primary" (click)="submitRating()">Envoyer votre note</button>
+    </div>
+
+    @if (ratingSummary) {
+      <p class="mini-line">Moyenne: {{ ratingSummary.average | number: '1.1-2' }} / 5 ({{ ratingSummary.total }} avis)</p>
+    }
+    @if (feedbackMessage) {
+      <p class="mini-line strong">{{ feedbackMessage }}</p>
+    }
+  </article>
+</section>

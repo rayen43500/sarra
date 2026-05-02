@@ -1,0 +1,219 @@
+<section class="page-stack">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="page-icon theme-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="0.5"/><circle cx="17.5" cy="10.5" r="0.5"/><circle cx="8.5" cy="7.5" r="0.5"/><circle cx="6.5" cy="12.5" r="0.5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+    </div>
+    <div>
+      <h2>Personnalisation du Thème</h2>
+      <p class="muted">Ajustez l'identité visuelle sur toute la plateforme.</p>
+    </div>
+  </div>
+
+  @if (actionMessage) {
+    <div class="alert-msg fade-in" [class.success]="actionSuccess" [class.error]="!actionSuccess">
+      {{ actionMessage }}
+    </div>
+  }
+
+  <!-- Tabs -->
+  <div class="theme-tabs">
+    <button class="tab-btn" [class.active]="activeTab === 'colors'" (click)="activeTab = 'colors'">🎨 Couleurs & Apparence</button>
+    <button class="tab-btn" [class.active]="activeTab === 'login'" (click)="activeTab = 'login'">🔐 Page de Connexion</button>
+    <button class="tab-btn" [class.active]="activeTab === 'backgrounds'" (click)="activeTab = 'backgrounds'">🖼️ Arrière-plans</button>
+  </div>
+
+  <!-- Colors Tab -->
+  @if (activeTab === 'colors') {
+    <div class="tab-content fade-in">
+      <article class="card">
+        <h3>Identité & Couleurs</h3>
+
+        <div class="forms-grid">
+          <div class="field-group">
+            <label class="field-label">Nom de l'application</label>
+            <input class="input" type="text" [(ngModel)]="themeForm.appName" placeholder="CertifyHub" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Logo de la plateforme</label>
+            <div class="upload-box">
+              <input type="file" id="logo-upload" (change)="onLogoUpload($event)" accept="image/*" />
+              @if (themeForm.logoUrl) {
+                <img [src]="formatAssetUrl(themeForm.logoUrl)" class="preview-thumb" alt="Logo" />
+              }
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Mode d'arrière-plan</label>
+            <select class="input" [(ngModel)]="themeForm.backgroundMode">
+              <option value="STATIC">Statique (Première image)</option>
+              <option value="SLIDESHOW">Diaporama (Toutes les actives)</option>
+              <option value="RANDOM">Aléatoire (Toutes les actives)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="color-section">
+          <h4>Palette principale</h4>
+          <div class="color-pickers">
+            <div class="color-item">
+              <label>Couleur Primaire</label>
+              <input type="color" [(ngModel)]="uiThemeForm.primary" />
+            </div>
+            <div class="color-item">
+              <label>Couleur Secondaire</label>
+              <input type="color" [(ngModel)]="uiThemeForm.secondary" />
+            </div>
+          </div>
+
+          <h4>Palette de statut</h4>
+          <div class="color-pickers wide">
+            <div class="color-item"><label>Succès</label><input type="color" [(ngModel)]="uiThemeForm.success" /></div>
+            <div class="color-item"><label>Danger</label><input type="color" [(ngModel)]="uiThemeForm.danger" /></div>
+            <div class="color-item"><label>Avertissement</label><input type="color" [(ngModel)]="uiThemeForm.warning" /></div>
+          </div>
+
+          <h4>Palette interface</h4>
+          <div class="color-pickers wide">
+            <div class="color-item"><label>Fond</label><input type="color" [(ngModel)]="uiThemeForm.background" /></div>
+            <div class="color-item"><label>Carte</label><input type="color" [(ngModel)]="uiThemeForm.card" /></div>
+            <div class="color-item"><label>Texte principal</label><input type="color" [(ngModel)]="uiThemeForm.textMain" /></div>
+            <div class="color-item"><label>Texte secondaire</label><input type="color" [(ngModel)]="uiThemeForm.textSecondary" /></div>
+            <div class="color-item"><label>Bordure</label><input type="color" [(ngModel)]="uiThemeForm.border" /></div>
+          </div>
+        </div>
+
+        <!-- Live preview -->
+        <div class="theme-preview">
+          <h4>Aperçu en temps réel</h4>
+          <div class="preview-row">
+            <span class="preview-pill primary" [style.color]="uiThemeForm.primary" [style.background]="uiThemeForm.primary + '1A'">Primary</span>
+            <span class="preview-pill" [style.color]="uiThemeForm.secondary" [style.background]="uiThemeForm.secondary + '1A'">Secondary</span>
+            <span class="preview-pill" [style.color]="uiThemeForm.success" [style.background]="uiThemeForm.success + '1A'">Success</span>
+            <span class="preview-pill" [style.color]="uiThemeForm.danger" [style.background]="uiThemeForm.danger + '1A'">Danger</span>
+            <span class="preview-pill" [style.color]="uiThemeForm.warning" [style.background]="uiThemeForm.warning + '1A'">Warning</span>
+          </div>
+          <div class="preview-card" [style.background]="uiThemeForm.card" [style.border-color]="uiThemeForm.border">
+            <p [style.color]="uiThemeForm.textMain"><strong>Titre exemple</strong></p>
+            <p [style.color]="uiThemeForm.textSecondary" style="font-size:0.88rem">Texte secondaire descriptif</p>
+            <button class="btn-preview" [style.background]="uiThemeForm.primary">Bouton Primary</button>
+          </div>
+        </div>
+
+        <div class="theme-actions">
+          <button class="btn btn-secondary" (click)="applyVisualThemeOnly()">Aperçu uniquement</button>
+          <button class="btn btn-secondary" (click)="resetVisualTheme()">Réinitialiser</button>
+          <button class="btn btn-primary" (click)="updateTheme()">💾 Sauvegarder le thème</button>
+        </div>
+      </article>
+    </div>
+  }
+
+  <!-- Login Content Tab -->
+  @if (activeTab === 'login') {
+    <div class="tab-content fade-in">
+      <article class="card">
+        <h3>Contenu de la page de connexion</h3>
+        <p class="muted">Ces champs pilotent la partie gauche de l'écran de login.</p>
+
+        <div class="forms-grid">
+          <div class="field-group">
+            <label class="field-label">Badge de sécurité</label>
+            <input class="input" type="text" [(ngModel)]="themeForm.loginBadgeText" placeholder="Certificats signés et vérifiables" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Titre principal (Hero)</label>
+            <textarea class="input" rows="3" [(ngModel)]="themeForm.loginHeroTitle" placeholder="Votre espace de confiance..."></textarea>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Sous-texte (Hero)</label>
+            <textarea class="input" rows="4" [(ngModel)]="themeForm.loginHeroSubtitle" placeholder="Texte descriptif..."></textarea>
+          </div>
+
+          <div class="login-cards-grid">
+            <div class="login-card-fields">
+              <h4>🔐 Carte Admin</h4>
+              <div class="field-group">
+                <label class="field-label">Titre</label>
+                <input class="input" type="text" [(ngModel)]="themeForm.loginAdminCardTitle" placeholder="Accès Admin" />
+              </div>
+              <div class="field-group">
+                <label class="field-label">Description</label>
+                <textarea class="input" rows="2" [(ngModel)]="themeForm.loginAdminCardDescription" placeholder="Publication, signature..."></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Identifiants affichés</label>
+                <input class="input" type="text" [(ngModel)]="themeForm.loginAdminCardCredentials" placeholder="admin@cert.local / Admin@123" />
+              </div>
+            </div>
+            <div class="login-card-fields">
+              <h4>👤 Carte Client</h4>
+              <div class="field-group">
+                <label class="field-label">Titre</label>
+                <input class="input" type="text" [(ngModel)]="themeForm.loginClientCardTitle" placeholder="Accès Client" />
+              </div>
+              <div class="field-group">
+                <label class="field-label">Description</label>
+                <textarea class="input" rows="2" [(ngModel)]="themeForm.loginClientCardDescription" placeholder="Consultation, téléchargement..."></textarea>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Identifiants affichés</label>
+                <input class="input" type="text" [(ngModel)]="themeForm.loginClientCardCredentials" placeholder="client@cert.local / Client@123" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="theme-actions">
+          <button class="btn btn-primary" (click)="updateTheme()">💾 Sauvegarder</button>
+        </div>
+      </article>
+    </div>
+  }
+
+  <!-- Backgrounds Tab -->
+  @if (activeTab === 'backgrounds') {
+    <div class="tab-content fade-in">
+      <article class="card">
+        <h3>Gestion des Arrière-plans</h3>
+        <p class="muted">Uploadez des images pour le fond de l'application. Format suggéré : JPG/PNG, 1920×1080.</p>
+        <div class="upload-area">
+          <input type="file" id="bg-upload" (change)="onBackgroundUpload($event)" accept="image/*" />
+          <label for="bg-upload" class="upload-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Cliquez ou glissez une image ici</span>
+            <small class="muted">JPG, PNG · Max 5 MB · 1920×1080 recommandé</small>
+          </label>
+        </div>
+
+        @if (allBackgrounds.length > 0) {
+          <div class="bg-gallery">
+            @for (bg of allBackgrounds; track bg.id) {
+              <div class="bg-item" [class.inactive]="!bg.active">
+                <img [src]="formatAssetUrl(bg.url)" [alt]="'Fond ' + bg.id" />
+                <div class="bg-overlay">
+                  <span class="bg-status-badge" [class.active-badge]="bg.active" [class.inactive-badge]="!bg.active">
+                    {{ bg.active ? 'Active' : 'Inactive' }}
+                  </span>
+                  <div class="bg-actions">
+                    <button class="btn-icon" (click)="previewBg(bg.url)" title="Aperçu immédiat">👁️</button>
+                    <button class="btn-icon" (click)="toggleBg(bg.id)" [title]="bg.active ? 'Désactiver' : 'Activer'">
+                      {{ bg.active ? '✅' : '🚫' }}
+                    </button>
+                    <button class="btn-icon danger" (click)="deleteBg(bg.id)" title="Supprimer">🗑️</button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-state-sm">
+            <p class="muted">Aucune image d'arrière-plan uploadée.</p>
+          </div>
+        }
+      </article>
+    </div>
+  }
+</section>

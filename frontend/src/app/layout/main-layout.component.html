@@ -1,0 +1,85 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand fade-in">
+      @if (logoUrl) {
+        <img [src]="logoUrl" alt="Logo" class="brand-logo" />
+      } @else {
+        <div class="brand-badge">{{ appName.substring(0,2).toUpperCase() }}</div>
+      }
+      <div class="brand-copy">
+        <h1>{{ appName }}</h1>
+        <p>{{ spaceTitle }}</p>
+      </div>
+    </div>
+
+    <nav class="nav-list">
+      <p class="nav-section">Navigation</p>
+      @for (item of navItems; track item.route) {
+        <a class="nav-link"
+           [routerLink]="item.route"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           routerLinkActive="active">
+          <span class="nav-icon" [innerHTML]="item.icon | safeHtml" aria-hidden="true"></span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+      @if (serviceItems.length > 0) {
+        <p class="nav-section">Services client</p>
+        @for (item of serviceItems; track item.route) {
+          <a class="nav-link"
+             [routerLink]="item.route"
+             [routerLinkActiveOptions]="{ exact: !!item.exact }"
+             routerLinkActive="active">
+            <span class="nav-icon" [innerHTML]="item.icon | safeHtml" aria-hidden="true"></span>
+            <span class="nav-label">{{ item.label }}</span>
+          </a>
+        }
+      }
+      <p class="nav-section">Compte</p>
+      @for (item of accountItems; track item.route) {
+        <a class="nav-link"
+           [routerLink]="item.route"
+           [routerLinkActiveOptions]="{ exact: !!item.exact }"
+           routerLinkActive="active">
+          <span class="nav-icon" [innerHTML]="item.icon | safeHtml" aria-hidden="true"></span>
+          <span class="nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar">{{ (authService.getEmail() || 'A').charAt(0).toUpperCase() }}</div>
+        <div class="user-details">
+          <h4>{{ authService.getEmail() || 'demo@cert.local' }}</h4>
+          <span class="badge info">{{ authService.getRole() || 'ROLE_CLIENT' }}</span>
+        </div>
+      </div>
+      <p class="muted session-label">Session active</p>
+      <button class="btn btn-secondary" (click)="logout()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Se déconnecter
+      </button>
+    </div>
+  </aside>
+
+  <section class="main-zone">
+    <header class="topbar">
+      <div class="topbar-headline">
+        <span class="topbar-kicker">{{ portalTitle }}</span>
+        <h2>Plateforme de certificats numériques</h2>
+        <p class="muted">{{ portalSubtitle }}</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-wrap">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="input search-input" placeholder="Recherche rapide..." />
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </section>
+</div>

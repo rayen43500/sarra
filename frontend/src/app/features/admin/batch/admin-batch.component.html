@@ -1,0 +1,76 @@
+<section class="page-stack">
+  <div class="page-header">
+    <div class="page-icon batch-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    <div>
+      <h2>Batch Newsletter</h2>
+      <p class="muted">Lancez manuellement le job Spring Batch <code>newsletterDigestJob</code>.</p>
+    </div>
+  </div>
+
+  <div class="batch-grid">
+    <!-- Control Card -->
+    <article class="card fade-in batch-control-card">
+      <h3>Exécution manuelle</h3>
+      <p class="muted">Ce job envoie un digest newsletter à tous les abonnés actifs de la plateforme.</p>
+
+      <div class="batch-launch-area">
+        <div class="batch-icon-large" [class.running]="isRunning">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="batch-info">
+          <strong>newsletterDigestJob</strong>
+          <p class="muted">Spring Batch · Endpoint: POST /api/admin/features/batch/newsletter-digest/run</p>
+        </div>
+      </div>
+
+      @if (latestMessage) {
+        <div class="alert-msg fade-in" [class.success]="latestMessage.startsWith('✅')" [class.error]="latestMessage.startsWith('❌')">
+          {{ latestMessage }}
+        </div>
+      }
+
+      <div class="batch-actions">
+        <button class="btn btn-primary btn-launch" (click)="runBatch()" [disabled]="isRunning">
+          @if (isRunning) {
+            <span class="spinner"></span> Exécution en cours...
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Lancer le batch
+          }
+        </button>
+        @if (batchHistory.length > 0) {
+          <button class="btn btn-secondary" (click)="clearHistory()">Effacer l'historique</button>
+        }
+      </div>
+    </article>
+
+    <!-- History Card -->
+    <article class="card fade-in">
+      <h3>Historique d'exécution</h3>
+      @if (batchHistory.length === 0) {
+        <div class="empty-state-sm">
+          <p class="muted">Aucune exécution dans cette session.</p>
+        </div>
+      } @else {
+        <div class="history-list">
+          @for (run of batchHistory; track $index) {
+            <div class="history-item" [class.run-success]="run.status === 'success'" [class.run-error]="run.status === 'error'" [class.run-running]="run.status === 'running'">
+              <div class="run-icon">
+                @if (run.status === 'success') { ✅ }
+                @else if (run.status === 'error') { ❌ }
+                @else { <span class="spinner-sm"></span> }
+              </div>
+              <div class="run-details">
+                <strong>{{ run.label }}</strong>
+                <p class="muted">{{ run.message }}</p>
+                <span class="run-time">{{ run.time | date:'HH:mm:ss' }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </article>
+  </div>
+</section>

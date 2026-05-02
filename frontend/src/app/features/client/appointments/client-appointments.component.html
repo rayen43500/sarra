@@ -1,0 +1,24 @@
+<section class="page-stack">
+  <article class="card">
+    <h3>Prise de RDV</h3>
+    <p class="muted">Planifiez un rendez-vous de suivi avec l equipe support.</p>
+    <div class="stack">
+      <input class="input" type="datetime-local" [(ngModel)]="appointmentDateTime" />
+      <textarea class="input" rows="2" [(ngModel)]="appointmentNote" placeholder="Objet du rendez-vous"></textarea>
+      <button class="btn btn-primary" (click)="createAppointment()">Demander RDV</button>
+    </div>
+    @if (appointmentMessage) {
+      <p class="mini-line">{{ appointmentMessage }}</p>
+    }
+    @if (appointments.length > 0) {
+      <ul class="appointment-list">
+        @for (item of appointments; track item.id) {
+          <li>
+            <span>{{ item.scheduledAt | date: 'short' }}</span>
+            <span class="badge" [class]="'badge ' + appointmentBadgeClass(item.status)">{{ item.status }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </article>
+</section>

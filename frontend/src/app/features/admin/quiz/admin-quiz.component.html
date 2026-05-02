@@ -1,0 +1,176 @@
+<section class="page-stack quiz-admin">
+  <div class="page-header">
+    <div>
+      <h2>Quiz IA et revisions</h2>
+      <p class="muted">Generez des QCM automatiquement, ajoutez des documents de revision et surveillez les resultats.</p>
+    </div>
+  </div>
+
+  <div class="grid-two">
+    <article class="card">
+      <h3>Generer un quiz avec IA</h3>
+      <div class="forms-grid">
+        <label class="field-group">
+          <span class="field-label">Sujet</span>
+          <input class="input" type="text" [(ngModel)]="generateModel.topic" />
+        </label>
+        <div class="mini-grid">
+          <label class="field-group">
+            <span class="field-label">Questions</span>
+            <input class="input" type="number" min="3" max="30" [(ngModel)]="generateModel.questionCount" />
+          </label>
+          <label class="field-group">
+            <span class="field-label">Difficulte</span>
+            <select class="input" [(ngModel)]="generateModel.difficulty">
+              <option value="debutant">debutant</option>
+              <option value="intermediaire">intermediaire</option>
+              <option value="avance">avance</option>
+            </select>
+          </label>
+        </div>
+        <div class="mini-grid">
+          <label class="field-group">
+            <span class="field-label">Duree minutes</span>
+            <input class="input" type="number" min="1" [(ngModel)]="generateModel.durationMinutes" />
+          </label>
+          <label class="field-group">
+            <span class="field-label">Seuil %</span>
+            <input class="input" type="number" min="1" max="100" [(ngModel)]="generateModel.passScore" />
+          </label>
+        </div>
+        <label class="toggle-line">
+          <input type="checkbox" [(ngModel)]="generateModel.isActive" />
+          <span>Publier directement pour les clients</span>
+        </label>
+        <button class="btn btn-primary" (click)="generateQuiz()" [disabled]="loading">
+          {{ loading ? 'Generation...' : 'Generer le quiz' }}
+        </button>
+      </div>
+    </article>
+
+    <article class="card">
+      <h3>Document de revision</h3>
+      <div class="forms-grid">
+        <label class="field-group">
+          <span class="field-label">Quiz</span>
+          <select class="input" [(ngModel)]="selectedExamId" (change)="loadResults()">
+            @for (exam of exams; track exam.id) {
+              <option [ngValue]="exam.id">{{ exam.title }}</option>
+            }
+          </select>
+        </label>
+        <label class="field-group">
+          <span class="field-label">Titre document</span>
+          <input class="input" type="text" [(ngModel)]="revisionTitle" />
+        </label>
+        <label class="upload-box">
+          <input type="file" (change)="onRevisionFileSelected($event)" />
+          <span>{{ revisionFile?.name || 'Choisir PDF, image ou document' }}</span>
+        </label>
+        <button class="btn btn-secondary" (click)="uploadRevisionDocument()" [disabled]="uploadLoading">
+          {{ uploadLoading ? 'Upload...' : 'Ajouter le document' }}
+        </button>
+      </div>
+    </article>
+  </div>
+
+  @if (message) {
+    <article class="card status-card">
+      <p class="mini-line strong">{{ message }}</p>
+    </article>
+  }
+
+  @if (generatedQuiz) {
+    <article class="card">
+      <h3>Dernier quiz genere</h3>
+      <p class="muted">{{ generatedQuiz.exam.title }} - {{ generatedQuiz.questions.length }} questions</p>
+      <div class="question-preview">
+        @for (question of generatedQuiz.questions; track question.id) {
+          <div class="preview-row">
+            <strong>{{ question.orderIndex }}.</strong>
+            <span>{{ question.text }}</span>
+          </div>
+        }
+      </div>
+    </article>
+  }
+
+  <article class="card">
+    <div class="card-headline">
+      <div>
+        <h3>Quiz disponibles</h3>
+        <p class="muted">Documents de revision visibles cote client.</p>
+      </div>
+      <button class="btn btn-secondary" (click)="loadExams()">Actualiser</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Quiz</th>
+            <th>Duree</th>
+            <th>Seuil</th>
+            <th>Document revision</th>
+            <th>Etat</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (exam of exams; track exam.id) {
+            <tr>
+              <td>{{ exam.title }}</td>
+              <td>{{ exam.durationMinutes }} min</td>
+              <td>{{ exam.passScore }}%</td>
+              <td>
+                @if (exam.revisionDocumentUrl) {
+                  <a class="doc-link" [href]="documentUrl(exam.revisionDocumentUrl)" target="_blank" rel="noreferrer">
+                    {{ exam.revisionDocumentTitle || 'Document' }}
+                  </a>
+                } @else {
+                  <span class="muted">Aucun</span>
+                }
+              </td>
+              <td><span class="badge" [class]="exam.isActive ? 'success' : 'warning'">{{ exam.isActive ? 'Actif' : 'Brouillon' }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </article>
+
+  <article class="card">
+    <h3>Resultats et anti-fraude</h3>
+    @if (resultsLoading) {
+      <p class="muted">Chargement des resultats...</p>
+    }
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Examen</th>
+            <th>Score</th>
+            <th>Resultat</th>
+            <th>Fraude</th>
+            <th>Signal</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (result of results; track result.id) {
+            <tr>
+              <td>{{ result.examTitle }}</td>
+              <td>{{ result.percentage | number:'1.0-2' }}%</td>
+              <td><span class="badge" [class]="result.passed ? 'success' : 'danger'">{{ result.passed ? 'Reussi' : 'Echoue' }}</span></td>
+              <td><span class="badge" [class]="fraudBadge(result)">{{ result.fraudScore }}/100</span></td>
+              <td class="muted">{{ result.fraudReason }}</td>
+              <td>{{ result.submittedAt | date:'short' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="6" class="muted">Aucun resultat pour ce quiz.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>

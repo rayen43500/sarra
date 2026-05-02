@@ -1,0 +1,26 @@
+<section class="page-stack">
+  <article class="card fade-in">
+    <h3>Historique des connexions</h3>
+    <p class="muted">Suivi de vos accès récents pour votre sécurité.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date & Heure</th>
+            <th>Adresse IP</th>
+            <th>Appareil / Navigateur</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (login of loginHistory; track login.id) {
+            <tr>
+              <td>{{ login.loginTime | date: 'medium' }}</td>
+              <td><code>{{ login.ipAddress }}</code></td>
+              <td class="muted">{{ login.userAgent }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>

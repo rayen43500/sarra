@@ -1,0 +1,113 @@
+.quiz-admin {
+  display: grid;
+  gap: 24px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.forms-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.field-group {
+  display: grid;
+  gap: 7px;
+}
+
+.field-label {
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.toggle-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.upload-box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 88px;
+  padding: 16px;
+  border: 1px dashed color-mix(in srgb, var(--color-primary) 34%, var(--color-border));
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-primary-light) 36%, #ffffff);
+  cursor: pointer;
+  text-align: center;
+  font-weight: 800;
+}
+
+.upload-box input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.status-card {
+  padding: 16px 20px;
+}
+
+.strong {
+  color: var(--color-text-main);
+}
+
+.card-headline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.question-preview {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.preview-row {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: #ffffff;
+}
+
+.doc-link {
+  color: var(--color-primary);
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .mini-grid,
+  .card-headline {
+    grid-template-columns: 1fr;
+  }
+
+  .card-headline {
+    display: grid;
+  }
+}

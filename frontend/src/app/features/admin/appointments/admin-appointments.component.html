@@ -1,0 +1,75 @@
+<section class="page-stack">
+  <div class="page-header">
+    <div class="page-icon appt-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div>
+      <h2>Gestion des RDV Clients</h2>
+      <p class="muted">Confirmez, annulez ou suivez les rendez-vous de vos clients.</p>
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="stats-row">
+    @for (f of filters; track f) {
+      <button class="stat-pill" [class.active]="filterStatus === f" (click)="setFilter(f)">
+        {{ f === 'ALL' ? 'Tous' : f }}
+        <span class="pill-count">{{ countByStatus(f) }}</span>
+      </button>
+    }
+  </div>
+
+  @if (actionMessage) {
+    <div class="alert-msg success fade-in">{{ actionMessage }}</div>
+  }
+
+  <article class="card">
+    @if (isLoading) {
+      <div class="loading-state">
+        <span class="spinner-lg"></span>
+        <p>Chargement des rendez-vous...</p>
+      </div>
+    } @else if (filtered.length === 0) {
+      <div class="empty-state">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <p>Aucun rendez-vous pour le filtre sélectionné.</p>
+      </div>
+    } @else {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Client</th>
+              <th>Date & Heure</th>
+              <th>Note</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (apt of filtered; track apt.id) {
+              <tr>
+                <td><span class="id-badge">#{{ apt.id }}</span></td>
+                <td>User #{{ apt.userId }}</td>
+                <td>{{ apt.scheduledAt | date:'dd/MM/yy HH:mm' }}</td>
+                <td class="note-cell">{{ apt.note || '—' }}</td>
+                <td><span class="badge" [class]="statusBadgeClass(apt.status)">{{ apt.status }}</span></td>
+                <td>
+                  <div class="row-actions">
+                    <button class="btn btn-xs btn-success" (click)="updateStatus(apt.id, 'CONFIRMED')" [disabled]="apt.status === 'CONFIRMED'">
+                      ✓ Confirmer
+                    </button>
+                    <button class="btn btn-xs btn-danger" (click)="updateStatus(apt.id, 'CANCELLED')" [disabled]="apt.status === 'CANCELLED'">
+                      ✕ Annuler
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </article>
+</section>

@@ -1,0 +1,114 @@
+<section class="page-stack">
+  <!-- Stats Grid -->
+  <div class="grid-stats">
+    @for (stat of stats; track stat.label) {
+      <article class="card stat-card fade-in">
+        <div class="stat-icon" [class]="'stat-icon-' + stat.colorKey">
+          <span [innerHTML]="stat.icon"></span>
+        </div>
+        <div>
+          <p class="muted stat-label">{{ stat.label }}</p>
+          <h3>{{ stat.value }}</h3>
+          <span class="badge" [class]="stat.trend.startsWith('-') ? 'danger' : 'success'">{{ stat.trend }}</span>
+        </div>
+      </article>
+    }
+  </div>
+
+  <div class="grid-two">
+    <!-- Quick Actions -->
+    <article class="card fade-in">
+      <h3>Actions rapides</h3>
+      <p class="muted">Opérations centralisées pour l'administrateur.</p>
+      <div class="quick-actions">
+        @for (action of quickActions; track action.label) {
+          <button class="quick-btn" (click)="action.fn()">
+            <span class="quick-icon" [innerHTML]="action.icon"></span>
+            <span>{{ action.label }}</span>
+          </button>
+        }
+      </div>
+      @if (actionMessage) {
+        <p class="action-message fade-in">{{ actionMessage }}</p>
+      }
+    </article>
+
+    <!-- Recent Activity -->
+    <article class="card fade-in">
+      <h3>Activité récente</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Acteur</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (log of logs; track log.date) {
+              <tr>
+                <td><span class="action-tag">{{ log.action }}</span></td>
+                <td class="actor-cell">{{ log.actor }}</td>
+                <td class="date-cell">{{ log.date }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </div>
+
+  <div class="grid-two">
+    <article class="card profile-card fade-in">
+      <div class="profile-head">
+        @if (avatarUrl()) {
+          <img class="profile-avatar-img" [src]="avatarUrl()" alt="Photo profil" />
+        } @else {
+          <div class="profile-avatar-fallback">{{ (profile?.firstName || authService.getEmail() || 'A').charAt(0).toUpperCase() }}</div>
+        }
+        <div>
+          <h3>Mon profil admin</h3>
+          <p class="muted">{{ profile?.email || authService.getEmail() }}</p>
+        </div>
+      </div>
+      <div class="profile-grid">
+        <input class="input" type="text" [(ngModel)]="profileModel.firstName" placeholder="Prenom" />
+        <input class="input" type="text" [(ngModel)]="profileModel.lastName" placeholder="Nom" />
+        <input class="input" type="text" [(ngModel)]="profileModel.phone" placeholder="Telephone" />
+        <button class="btn btn-primary" (click)="saveProfile()">Enregistrer</button>
+      </div>
+      <div class="avatar-upload-row">
+        <label class="avatar-upload">
+          <input type="file" accept="image/*" (change)="onAvatarSelected($event)" />
+          <span>{{ profileAvatarFile?.name || 'Choisir une image profil' }}</span>
+        </label>
+        <button class="btn btn-secondary" (click)="uploadAvatar()">Uploader image</button>
+      </div>
+      @if (profileMessage) {
+        <p class="mini-line strong">{{ profileMessage }}</p>
+      }
+    </article>
+
+    <article class="card fade-in">
+      <h3>Theme visuel en un clic</h3>
+      <p class="muted">Mettez a jour logo et couleurs dans le module Theme.</p>
+      <button class="btn btn-secondary" (click)="navigate('/app/admin/theme')">Ouvrir Theme & Style</button>
+    </article>
+  </div>
+
+  <!-- Navigation shortcuts -->
+  <article class="card fade-in">
+    <h3>Navigation rapide</h3>
+    <p class="muted">Accédez directement aux modules de la plateforme.</p>
+    <div class="nav-shortcuts">
+      @for (shortcut of shortcuts; track shortcut.label) {
+        <button class="shortcut-card" (click)="navigate(shortcut.route)">
+          <span class="shortcut-icon" [innerHTML]="shortcut.icon"></span>
+          <span class="shortcut-label">{{ shortcut.label }}</span>
+          <span class="shortcut-arrow">→</span>
+        </button>
+      }
+    </div>
+  </article>
+</section>

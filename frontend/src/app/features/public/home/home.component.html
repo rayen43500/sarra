@@ -1,0 +1,102 @@
+<section class="home-wrap fade-in">
+  <header class="navbar">
+    <div class="container nav-content">
+      <div class="brand">
+        @if (logoUrl) {
+          <img [src]="logoUrl" alt="Logo" class="brand-logo" />
+        } @else {
+          <div class="brand-badge">{{ appName.substring(0,2).toUpperCase() }}</div>
+        }
+        <h1>{{ appName }}</h1>
+      </div>
+      <div class="nav-actions">
+        <a routerLink="/verify" class="btn btn-ghost">Vérifier</a>
+        <a routerLink="/login" class="btn btn-primary">Connexion</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-text">
+        <span class="badge info-badge">Système de Certification Avancé</span>
+        <h1 class="hero-title">
+          Authenticité Totale. <br>
+          <span class="gradient-text">Signature Numérique Intégrée.</span>
+        </h1>
+        <p class="hero-description">
+          Délivrez, signez et vérifiez vos documents officiels sur une plateforme sécurisée par blockchain et signature cryptographique.
+        </p>
+        <div class="cta-group">
+          <a routerLink="/login" class="btn btn-primary btn-lg">Démarrer Maintenant</a>
+          <a routerLink="/verify" class="btn btn-secondary btn-lg">Vérification Publique</a>
+        </div>
+        <div class="tech-stack">
+          @for (tech of stack; track tech) {
+            <span class="tech-chip">{{ tech }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="mockup-container">
+          <img src="cert-mockup.png" alt="Certificate Mockup" class="cert-mockup-img" />
+          <div class="glass-overlay">
+            <div class="visual-header">
+              <span class="status-dot pulse"></span>
+              <span>Signature Vérifiée en Temps Réel</span>
+            </div>
+          </div>
+        </div>
+        <div class="floating-badge badge-1">🛡️ Certifié</div>
+        <div class="floating-badge badge-2">💎 Premium</div>
+        <div class="floating-badge badge-3">🔒 Sécurisé</div>
+      </div>
+    </div>
+  </main>
+
+  <section class="trust-section container">
+    <p class="muted">ILS NOUS FONT CONFIANCE</p>
+    <div class="partners-grid">
+      <div class="partner">🏦 FinanceHub</div>
+      <div class="partner">🎓 EduTrack</div>
+      <div class="partner">🏗️ BuildSafe</div>
+      <div class="partner">🧬 BioCert</div>
+    </div>
+  </section>
+
+  <section class="features-section container">
+    <div class="section-header">
+      <h2>Fonctionnalités Clés</h2>
+      <p class="muted">Une architecture robuste pour des besoins professionnels.</p>
+    </div>
+    <div class="features-grid">
+      @for (item of features; track item.title) {
+        <article class="card feature-card">
+          <div class="icon-box">▣</div>
+          <h3>{{ item.title }}</h3>
+          <p class="muted">{{ item.text }}</p>
+        </article>
+      }
+    </div>
+  </section>
+
+  <section class="workflow-section container">
+    <div class="card workflow-box">
+      <h2>Cycle de Vie du Document</h2>
+      <div class="workflow-steps">
+        @for (item of workflow; track item.step) {
+          <div class="step-card">
+            <span class="step-num">{{ item.step }}</span>
+            <h4>{{ item.title }}</h4>
+            <p class="muted">{{ item.text }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <footer class="home-footer container">
+    <p>&copy; 2026 {{ appName }} - Plateforme de Certification Numérique.</p>
+  </footer>
+</section>

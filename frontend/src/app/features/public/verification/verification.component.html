@@ -1,0 +1,72 @@
+<section class="verification-page fade-in">
+  <div class="verification-hero">
+    <h1>Vérification de Certificat</h1>
+    <p class="muted">Scannez ou saisissez un code pour vérifier l'authenticité des documents.</p>
+  </div>
+
+  <article class="card verification-card glass-card">
+    <div class="search-box">
+      <input class="input" type="text" [(ngModel)]="certCode" placeholder="Ex: CERT-12345" (keyup.enter)="verify()" />
+      <button class="btn btn-primary" (click)="verify()" [disabled]="!certCode">Vérifier maintenant</button>
+    </div>
+
+    <div class="qr-scanner-section">
+      <div class="divider">
+        <span>OU SCANNEZ LE QR</span>
+      </div>
+      <div id="reader" class="scanner-preview"></div>
+    </div>
+
+    @if (error) {
+      <div class="error-badge slide-in">
+        <span class="badge danger">Erreur</span>
+        <p>{{ error }}</p>
+      </div>
+    }
+
+    @if (result) {
+      <div class="result-details fade-in">
+        <div class="status-header" [class.valid]="result.valid">
+          <div class="status-text">
+            <span class="badge" [class.success]="result.valid" [class.danger]="!result.valid">
+              {{ result.valid ? 'Certificat Authentique' : 'Certificat Invalide' }}
+            </span>
+            <h3>{{ result.valid ? 'Document Certifié' : 'Validation Échouée' }}</h3>
+          </div>
+          <div class="status-icon" [class.pulse]="result.valid">{{ result.valid ? '🛡️' : '⚠️' }}</div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="muted">Titulaire</span>
+            <p>{{ result.holder }}</p>
+          </div>
+          <div class="detail-item">
+            <span class="muted">Code de Sécurité</span>
+            <div class="code-box">
+              <code>{{ result.code }}</code>
+            </div>
+          </div>
+          <div class="detail-item">
+            <span class="muted">Date d'émission</span>
+            <p>{{ result.issueDate | date:'mediumDate' }}</p>
+          </div>
+          <div class="detail-item">
+            <span class="muted">Statut Systême</span>
+            <p [class.status-revoked]="result.status === 'REVOKED'">{{ result.status }}</p>
+          </div>
+        </div>
+        
+        @if (result.valid) {
+          <div class="signature-note">
+            <span class="icon">✅</span>
+            <div>
+              <strong>Signature Numérique Vérifiée</strong>
+              <p>Ce document a été signé cryptographiquement par l'autorité émettrice et n'a subi aucune modification.</p>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </article>
+</section>

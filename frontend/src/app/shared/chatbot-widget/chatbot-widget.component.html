@@ -1,0 +1,82 @@
+<button class="chatbot-fab" type="button" (click)="toggleChat()" aria-label="Assistant CertifyHub">
+  <span class="fab-icon">
+    @if (!chatOpen) {
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    } @else {
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    }
+  </span>
+</button>
+
+@if (chatOpen) {
+  <section class="chatbot-panel fade-up">
+    <div class="chatbot-header">
+      <div class="bot-identity">
+        <div class="bot-avatar">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        </div>
+        <div class="bot-info">
+          <h3>Assistant CertifyHub</h3>
+          <span class="status-indicator">En ligne • IA Gemini</span>
+        </div>
+      </div>
+      <button class="close-btn" (click)="toggleChat()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="chatbot-welcome">
+      <p>Besoin d'aide pour choisir votre certification ?</p>
+      <div class="quick-tags">
+        <button (click)="chooseCertificate('security')">🛡️ Sécurité</button>
+        <button (click)="chooseCertificate('frontend')">🎨 Frontend</button>
+        <button (click)="chooseCertificate('backend')">⚙️ Backend</button>
+        <button (click)="chooseCertificate('database')">📊 Data</button>
+      </div>
+    </div>
+
+    <div class="chat-history" id="chatbot-scroll">
+      @for (msg of messages; track $index) {
+        <div class="message-wrapper" [class.user-wrapper]="msg.sender === 'user'">
+          <div class="chat-bubble" [class.user]="msg.sender === 'user'" [class.bot]="msg.sender === 'bot'">
+            {{ msg.text }}
+          </div>
+        </div>
+      }
+      @if (chatLoading) {
+        <div class="message-wrapper">
+          <div class="chat-bubble bot typing">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="chat-controls">
+      <div class="input-container">
+        <input
+          class="chat-input"
+          type="text"
+          [(ngModel)]="chatInput"
+          (keydown.enter)="sendMessage()"
+          [disabled]="chatLoading"
+          placeholder="Posez votre question..."
+        />
+        <button class="send-btn" (click)="sendMessage()" [disabled]="chatLoading || !chatInput.trim()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+
+      <div class="newsletter-inline">
+        <input type="email" [(ngModel)]="newsletterEmail" placeholder="Newsletter email..." />
+        <button (click)="subscribeNewsletter()">S'abonner</button>
+      </div>
+      
+      @if (helperMessage) {
+        <div class="helper-toast" [class.visible]="!!helperMessage">{{ helperMessage }}</div>
+      }
+    </div>
+  </section>
+}

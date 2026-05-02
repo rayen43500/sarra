@@ -1,0 +1,10 @@
+.page-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.rating-box {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}

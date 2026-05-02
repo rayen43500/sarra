@@ -1,0 +1,127 @@
+<section class="card">
+  <header class="header-row">
+    <div>
+      <h3>{{ pageTitle }}</h3>
+      <p class="muted">{{ pageSubtitle }}</p>
+    </div>
+    @if (isAdmin) {
+      <button class="btn btn-primary" (click)="createCertificate()">Nouveau certificat</button>
+    }
+  </header>
+
+  <div class="kpi-row">
+    <span class="badge info">Total: {{ certificates.length }}</span>
+    <span class="badge success">Actifs: {{ activeCount }}</span>
+    <span class="badge warning">Expires: {{ expiredCount }}</span>
+    <span class="badge danger">Revoques: {{ revokedCount }}</span>
+  </div>
+
+  <div class="toolbar-row">
+    <input class="input" type="text" [(ngModel)]="searchTerm" placeholder="Rechercher par code, titre, titulaire..." />
+    <select class="input filter-select" [(ngModel)]="statusFilter">
+      <option value="ALL">Tous les statuts</option>
+      <option value="ACTIVE">ACTIVE</option>
+      <option value="EXPIRED">EXPIRED</option>
+      <option value="REVOKED">REVOKED</option>
+    </select>
+  </div>
+
+  @if (isAdmin && showCreateForm) {
+    <section class="create-box">
+      <div class="create-grid">
+        <input class="input" type="text" [(ngModel)]="createModel.title" placeholder="Titre du certificat" />
+        <textarea class="input" rows="2" [(ngModel)]="createModel.description" placeholder="Description"></textarea>
+
+        <select class="input" [(ngModel)]="createModel.issuedToUserId">
+          <option [ngValue]="0">Selectionner un client</option>
+          @for (user of clientUsers; track user.id) {
+            <option [ngValue]="user.id">{{ user.firstName }} {{ user.lastName }} ({{ user.email }})</option>
+          }
+        </select>
+
+        <div class="date-row">
+          <input class="input" type="date" [(ngModel)]="createModel.issueDate" />
+          <input class="input" type="date" [(ngModel)]="createModel.expiryDate" />
+        </div>
+      </div>
+
+      <div class="create-actions">
+        <button class="btn btn-primary" [disabled]="creating" (click)="submitCreateCertificate()">{{ creating ? 'Creation...' : 'Creer certificat' }}</button>
+      </div>
+    </section>
+  }
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Code</th>
+          <th>Titre</th>
+          <th>Titulaire</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cert of filteredCertificates; track cert.id) {
+          <tr>
+            <td>{{ cert.code }}</td>
+            <td>{{ cert.title }}</td>
+            <td>{{ cert.holder }}</td>
+            <td>
+              <span class="badge" [class.success]="cert.status === 'ACTIVE'" [class.warning]="cert.status === 'EXPIRED'" [class.danger]="cert.status === 'REVOKED'">
+                {{ cert.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-secondary" (click)="downloadPdf(cert)">PDF</button>
+              <button class="btn btn-secondary" (click)="openDetails(cert)">Details</button>
+              <button class="btn btn-secondary" (click)="goToVerification(cert)">Verifier</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @if (!loading && !hasLoadError && filteredCertificates.length === 0) {
+    <p class="muted">Aucun certificat ne correspond aux filtres actuels.</p>
+  }
+
+  @if (selectedCertificate) {
+    <section class="details-box">
+      <div class="details-head">
+        <h4>Details certificat</h4>
+        <button class="btn btn-secondary" (click)="clearDetails()">Fermer</button>
+      </div>
+      <div class="details-grid">
+        <p><strong>Code:</strong> {{ selectedCertificate.code }}</p>
+        <p><strong>Titre:</strong> {{ selectedCertificate.title }}</p>
+        <p><strong>Titulaire:</strong> {{ selectedCertificate.holder }}</p>
+        <p><strong>Statut:</strong> {{ selectedCertificate.status }}</p>
+        <p><strong>Date emission:</strong> {{ selectedCertificate.issueDate || '-' }}</p>
+        <p><strong>Date expiration:</strong> {{ selectedCertificate.expiryDate || '-' }}</p>
+      </div>
+    </section>
+  }
+
+  @if (loading) {
+    <p class="muted">Chargement des certificats en cours...</p>
+  }
+
+  @if (!loading && !hasLoadError && certificates.length === 0) {
+    <p class="muted">Aucun certificat disponible pour ce role.</p>
+  }
+
+  @if (!loading && hasLoadError) {
+    <div class="error-box">
+      <p class="error-title">Impossible de charger les certificats.</p>
+      <p class="muted">{{ loadErrorDetail }}</p>
+      <button class="btn btn-secondary" (click)="loadCertificates()">Reessayer</button>
+    </div>
+  }
+
+  @if (actionMessage) {
+    <p class="action-message">{{ actionMessage }}</p>
+  }
+</section>

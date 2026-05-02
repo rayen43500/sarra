@@ -1,0 +1,22 @@
+<section class="page-stack">
+  <article class="card">
+    <h3>Newsletter, RSS et social login</h3>
+    <p class="muted">Restez informe et connectez-vous via vos fournisseurs externes.</p>
+    <div class="stack">
+      <input class="input" type="email" [(ngModel)]="newsletterEmail" placeholder="Email newsletter" />
+      <button class="btn btn-secondary" (click)="subscribeNewsletter()">S'abonner</button>
+      <a class="btn btn-secondary link-btn" [href]="rssUrl" target="_blank" rel="noreferrer">Ouvrir flux RSS certificats</a>
+    </div>
+
+    @if (socialProviders) {
+      <div class="inline-actions">
+        <a class="btn btn-secondary link-btn" [href]="'http://localhost:8080' + socialProviders.facebookAuthUrl" target="_blank" rel="noreferrer">Facebook Login</a>
+        <a class="btn btn-secondary link-btn" [href]="'http://localhost:8080' + socialProviders.linkedInAuthUrl" target="_blank" rel="noreferrer">LinkedIn Login</a>
+      </div>
+    }
+
+    @if (feedbackMessage) {
+      <p class="mini-line strong">{{ feedbackMessage }}</p>
+    }
+  </article>
+</section>

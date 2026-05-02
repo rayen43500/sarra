@@ -1,0 +1,96 @@
+<section class="users-page">
+  <article class="card">
+    <h3>Gestion des utilisateurs</h3>
+    <p class="muted">CRUD utilisateurs + assignation de role + activation/desactivation.</p>
+
+    <form class="user-form" [formGroup]="form" (ngSubmit)="createUser()">
+      <input class="input" formControlName="firstName" placeholder="Prenom" />
+      <input class="input" formControlName="lastName" placeholder="Nom" />
+      <input class="input" formControlName="email" placeholder="Email" />
+      <input class="input" type="password" formControlName="password" placeholder="Mot de passe" />
+      <input class="input" formControlName="phone" placeholder="Telephone" />
+      <select class="input" formControlName="role">
+        <option value="ROLE_CLIENT">Client</option>
+        <option value="ROLE_ADMIN">Admin</option>
+      </select>
+      <button class="btn btn-primary" type="submit">Creer utilisateur</button>
+    </form>
+
+    @if (message) {
+      <p class="message">{{ message }}</p>
+    }
+  </article>
+
+  <article class="card">
+    <h3>Liste des utilisateurs</h3>
+
+    @if (loading) {
+      <p class="muted">Chargement...</p>
+    }
+
+    @if (!loading && users.length === 0) {
+      <p class="muted">Aucun utilisateur trouve.</p>
+    }
+
+    @if (users.length > 0) {
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Roles</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of users; track user.id) {
+              <tr>
+                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.roles.join(', ') }}</td>
+                <td><span class="badge" [class.success]="user.status === 'ACTIVE'" [class.warning]="user.status === 'BLOCKED'">{{ user.status }}</span></td>
+                  <div class="row-actions">
+                    <button class="btn btn-secondary btn-xs" (click)="openEmailModal(user)">📧 Email</button>
+                    <button class="btn btn-secondary btn-xs" (click)="notifyUser(user, 'WELCOME')">👋 Bienvenue</button>
+                    <button class="btn btn-secondary btn-xs" (click)="toggleStatus(user)">{{ user.status === 'ACTIVE' ? '🚫 Bloquer' : '✅ Activer' }}</button>
+                    <button class="btn btn-secondary btn-xs" (click)="assignAdminRole(user)" *ngIf="!user.roles.includes('ROLE_ADMIN')">🔑 Admin</button>
+                    <button class="btn btn-danger btn-xs" (click)="deleteUser(user)">🗑️</button>
+                  </div>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </article>
+
+  <!-- Email Modal -->
+  @if (selectedUserForEmail) {
+    <div class="modal-overlay">
+      <div class="modal-card fade-in">
+        <div class="modal-head">
+          <h3>Envoyer un email à {{ selectedUserForEmail.firstName }}</h3>
+          <button class="close-btn" (click)="closeEmailModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="field-group">
+            <label class="field-label">Sujet</label>
+            <input class="input" [(ngModel)]="quickEmailSubject" />
+          </div>
+          <div class="field-group">
+            <label class="field-label">Message</label>
+            <textarea class="input" rows="6" [(ngModel)]="quickEmailBody"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeEmailModal()">Annuler</button>
+          <button class="btn btn-primary" (click)="sendQuickEmail()" [disabled]="isSendingEmail">
+            {{ isSendingEmail ? 'Envoi en cours...' : '🚀 Envoyer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</section>

@@ -1,0 +1,134 @@
+<section class="page-stack">
+  <div class="page-header">
+    <div class="page-icon comms-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+    <div>
+      <h2>Communication</h2>
+      <p class="muted">Envoyez des emails et SMS directement depuis la plateforme.</p>
+    </div>
+  </div>
+
+  <div class="comms-grid">
+    <!-- Email Card -->
+    <article class="card fade-in">
+      <div class="card-head">
+        <div class="card-icon email-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <h3>Envoyer un Email</h3>
+          <p class="muted">Notification directe à un utilisateur ou client.</p>
+        </div>
+      </div>
+      <div class="forms-grid">
+        <div class="field-group">
+          <label class="field-label">Destinataire</label>
+          <input class="input" type="email" [(ngModel)]="emailTo" placeholder="email@exemple.com" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Sujet</label>
+          <input class="input" type="text" [(ngModel)]="emailSubject" placeholder="Objet de l'email" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Message</label>
+          <textarea class="input" rows="5" [(ngModel)]="emailBody" placeholder="Contenu du message..."></textarea>
+        </div>
+        @if (emailMessage) {
+          <div class="alert-msg" [class.success]="emailSuccess" [class.error]="!emailSuccess">
+            {{ emailMessage }}
+          </div>
+        }
+        <button class="btn btn-primary send-btn" (click)="sendEmail()" [disabled]="emailLoading">
+          @if (emailLoading) { <span class="spinner"></span> Envoi en cours... }
+          @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Envoyer l'email
+          }
+        </button>
+        <button class="btn btn-secondary send-btn" (click)="sendEmailToAllUsers()" [disabled]="bulkEmailLoading">
+          @if (bulkEmailLoading) { <span class="spinner-sm"></span> Envoi global... }
+          @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Envoyer a tous les utilisateurs
+          }
+        </button>
+      </div>
+
+      <!-- Gmail Config -->
+      <div class="gmail-config">
+        <button class="config-toggle" (click)="showGmailConfig = !showGmailConfig">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Configuration SMTP Gmail
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" [style.transform]="showGmailConfig ? 'rotate(180deg)' : ''"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        @if (showGmailConfig) {
+          <div class="gmail-fields fade-in">
+            <p class="muted config-hint">
+              ⚙️ Ces valeurs correspondent aux variables <code>SPRING_MAIL_USERNAME</code> et <code>SPRING_MAIL_PASSWORD</code> dans <code>application.properties</code>. Utilisez un <strong>mot de passe d'application Gmail</strong>.
+            </p>
+            <div class="field-group">
+              <label class="field-label">Adresse Gmail</label>
+              <input class="input" type="email" [(ngModel)]="gmailUser" placeholder="votre.email@gmail.com" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Mot de passe d'application Gmail</label>
+              <div class="password-wrap">
+                <input class="input" [type]="showGmailPassword ? 'text' : 'password'" [(ngModel)]="gmailPassword" placeholder="xxxx xxxx xxxx xxxx" />
+                <button type="button" class="eye-btn" (click)="toggleGmailPassword()">
+                  @if (showGmailPassword) {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  } @else {
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  }
+                </button>
+              </div>
+            </div>
+            <p class="muted config-note">
+              💡 Mettez à jour ces valeurs dans <code>backend/src/main/resources/application.properties</code> :
+            </p>
+            <pre class="config-code">spring.mail.username={{ gmailUser || 'votre.email@gmail.com' }}
+spring.mail.password={{ gmailPassword || 'xxxx xxxx xxxx xxxx' }}
+app.mail.enabled=true</pre>
+          </div>
+        }
+      </div>
+    </article>
+
+    <!-- SMS Card -->
+    <article class="card fade-in">
+      <div class="card-head">
+        <div class="card-icon sms-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <h3>Envoyer un SMS</h3>
+          <p class="muted">Rappel ou notification par message texte.</p>
+        </div>
+      </div>
+      <div class="forms-grid">
+        <div class="field-group">
+          <label class="field-label">Numéro de téléphone</label>
+          <input class="input" type="text" [(ngModel)]="smsTo" placeholder="+21600000000" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">Message SMS</label>
+          <textarea class="input" rows="5" [(ngModel)]="smsMessage" placeholder="Contenu du SMS..."></textarea>
+          <p class="muted char-count">{{ smsMessage.length }}/160 caractères</p>
+        </div>
+        @if (smsStatus) {
+          <div class="alert-msg" [class.success]="smsSuccess" [class.error]="!smsSuccess">
+            {{ smsStatus }}
+          </div>
+        }
+        <button class="btn btn-secondary send-btn" (click)="sendSms()" [disabled]="smsLoading">
+          @if (smsLoading) { <span class="spinner"></span> Envoi en cours... }
+          @else {
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Envoyer le SMS
+          }
+        </button>
+      </div>
+    </article>
+  </div>
+</section>

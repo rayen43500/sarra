@@ -1,0 +1,14 @@
+<section class="page-stack">
+  <article class="card">
+    <h3>Paiement simule</h3>
+    <p class="muted">Mode demonstration pour valider le parcours de paiement.</p>
+    <div class="stack">
+      <input class="input" type="number" min="1" [(ngModel)]="paymentAmount" placeholder="Montant" />
+      <input class="input" type="text" [(ngModel)]="paymentDescription" placeholder="Description" />
+      <button class="btn btn-primary" (click)="simulatePayment()">Payer (simulation)</button>
+    </div>
+    @if (paymentMessage) {
+      <p class="mini-line">{{ paymentMessage }}</p>
+    }
+  </article>
+</section>

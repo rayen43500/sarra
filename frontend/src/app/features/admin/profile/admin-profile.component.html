@@ -1,0 +1,39 @@
+<section class="profile-page card">
+  <header class="profile-header">
+    <div>
+      <h3>Coordonnees administrateur</h3>
+      <p class="muted">Mettez a jour vos informations et photo de profil.</p>
+    </div>
+  </header>
+
+  <div class="profile-head">
+    @if (avatarUrl()) {
+      <img class="profile-avatar-img" [src]="avatarUrl()" alt="Photo profil" />
+    } @else {
+      <div class="profile-avatar-fallback">{{ (profile?.firstName || authService.getEmail() || 'A').charAt(0).toUpperCase() }}</div>
+    }
+    <div>
+      <h4>{{ profile?.firstName || 'Admin' }} {{ profile?.lastName || 'Demo' }}</h4>
+      <p class="muted">{{ profile?.email || authService.getEmail() }}</p>
+    </div>
+  </div>
+
+  <div class="profile-grid">
+    <input class="input" type="text" [(ngModel)]="profileModel.firstName" placeholder="Prenom" />
+    <input class="input" type="text" [(ngModel)]="profileModel.lastName" placeholder="Nom" />
+    <input class="input" type="text" [(ngModel)]="profileModel.phone" placeholder="Telephone" />
+    <button class="btn btn-primary" (click)="saveProfile()">Enregistrer</button>
+  </div>
+
+  <div class="avatar-upload-row">
+    <label class="avatar-upload">
+      <input type="file" accept="image/*" (change)="onAvatarSelected($event)" />
+      <span>{{ profileAvatarFile?.name || 'Choisir une image profil' }}</span>
+    </label>
+    <button class="btn btn-secondary" (click)="uploadAvatar()">Uploader image</button>
+  </div>
+
+  @if (profileMessage) {
+    <p class="mini-line strong">{{ profileMessage }}</p>
+  }
+</section>
